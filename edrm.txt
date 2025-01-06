@@ -1,0 +1,25 @@
+import pandas as pd
+import numpy as np
+from scipy.stats import spearmanr
+
+# Load the dataset
+file_path = '/content/microsoft.csv'  # Update the path to your file
+dataset = pd.read_csv(file_path)
+
+# Step 1: Calculate the distance
+dataset['distance'] = abs(dataset['model_scores'] - dataset['reference_scores'])
+
+# Step 2: Determine the maximum distance
+d_max = dataset['reference_scores'].max() - dataset['reference_scores'].min()
+
+# Step 3: Compute the EDRM
+dataset['normalized_distance'] = 1 - (dataset['distance'] / d_max)
+EDRM = dataset['normalized_distance'].mean()
+
+# Step 4: Compute Spearman correlation
+spearman_corr, p_value = spearmanr(dataset['model_scores'], dataset['reference_scores'])
+
+# Display results
+print(f"EDRM: {EDRM}")
+print(f"Spearman Correlation: {spearman_corr}")
+print(f"p-value: {p_value}")
